@@ -54,6 +54,7 @@ AI RaidMeter is a **Gemini-powered Green Coding Coach** that reads real Arize Ph
         ↓
         └──────── loops back to the next Pre-flight ────────┘
 ```
+![Architecture](architecture.svg)
 
 ---
 
