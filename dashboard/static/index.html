@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI RaidMeter — Personal Green Coding Coach</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+         background: #0f1117; color: #e6e8ee; padding: 32px 20px; }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 8px; }
+  h1 { font-size: 34px; letter-spacing: -0.5px; }
+  h1 .raid { color: #ff6b6b; }
+  .tagline { color: #8b90a0; margin-top: 6px; font-size: 15px; }
+  .sub { color: #4dabf7; margin-top: 4px; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+  .card { background: #1a1d27; border-radius: 16px; padding: 24px; border: 1px solid #262a36; }
+  .card.before { border-top: 4px solid #ff6b6b; }
+  .card.after  { border-top: 4px solid #00d68f; }
+  .card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #8b90a0; }
+  .task { font-size: 15px; margin: 6px 0 16px; color: #c8ccd8; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .lvl3 { background: #3a1518; color: #ff6b6b; }
+  .lvl0 { background: #0e2e22; color: #00d68f; }
+  .total { font-size: 52px; font-weight: 700; margin: 14px 0 2px; }
+  .total.r { color: #ff6b6b; } .total.g { color: #00d68f; }
+  .total-lbl { font-size: 12px; color: #8b90a0; text-transform: uppercase; letter-spacing: 1px; }
+  .bars { margin: 18px 0; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 13px; }
+  .bar-row .lbl { width: 56px; color: #8b90a0; }
+  .bar-bg { flex: 1; height: 8px; background: #262a36; border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .bar-row .val { width: 42px; text-align: right; color: #c8ccd8; }
+  .metrics { display: flex; gap: 18px; margin: 16px 0; font-size: 13px; color: #c8ccd8; }
+  .metrics b { color: #fff; }
+  .signals { margin-top: 14px; }
+  .sig { background: #21161a; border-left: 3px solid #ff6b6b; padding: 8px 12px; border-radius: 6px; margin: 7px 0; font-size: 13px; }
+  .sig .sev { font-size: 10px; font-weight: 700; color: #ff8787; }
+  .sig .fix { color: #8b90a0; font-size: 12px; margin-top: 3px; }
+  .clean { background: #0e2e22; border-left: 3px solid #00d68f; padding: 12px; border-radius: 6px; color: #00d68f; font-size: 14px; }
+  .delta { background: #141821; border-radius: 16px; padding: 22px; margin-top: 24px;
+           display: flex; justify-content: space-around; flex-wrap: wrap; gap: 16px; border: 1px solid #262a36; }
+  .delta .d { text-align: center; }
+  .delta .dv { font-size: 26px; font-weight: 700; color: #00d68f; }
+  .delta .dl { font-size: 12px; color: #8b90a0; margin-top: 4px; }
+  footer { text-align: center; color: #565b6b; font-size: 12px; margin-top: 28px; }
+  .err { background: #3a1518; color: #ff6b6b; padding: 16px; border-radius: 8px; margin-top: 24px; }
+  .coachbtn{margin-top:12px;background:#4dabf7;color:#0f1117;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;font-size:13px}
+  .coachbox{margin-top:12px;background:#101725;border:1px solid #4dabf7;border-radius:8px;padding:14px;font-size:13px}
+  .coachbox b{color:#4dabf7}.coachbox ul{margin:8px 0 8px 18px}.coachbox i{color:#8b90a0}
+  .coachbox.err{border-color:#ff6b6b;color:#ff6b6b}
+  .basenote{margin:10px 0;font-size:12px;color:#8b90a0;font-style:italic}
+  .chatzone{max-width:760px;margin:24px auto 0;background:#141821;border:1px solid #262a36;border-radius:16px;padding:18px}
+  .chatzone h3{font-size:15px;color:#4dabf7;margin-bottom:4px}
+  .chatzone .sub2{font-size:12px;color:#8b90a0;margin-bottom:12px}
+  .chatlog{max-height:360px;overflow-y:auto;margin-bottom:10px}
+  .msg{margin:8px 0;padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.5;white-space:pre-wrap}
+  .msg.bot{background:#1a1d27;border-left:3px solid #00d68f}
+  .msg.user{background:#101725;border-left:3px solid #4dabf7}
+  .msg.load{background:#1a1d27;color:#8b90a0;font-style:italic}
+  .exq{display:inline-block;margin:3px;padding:5px 10px;background:#1a1d27;border:1px solid #4dabf7;border-radius:14px;color:#4dabf7;font-size:12px;cursor:pointer}
+  .chatin{display:flex;gap:8px;margin-top:8px}
+  .chatin input{flex:1;background:#0f1117;border:1px solid #262a36;border-radius:8px;padding:10px;color:#e6e8ee;font-size:13px}
+  .chatin button{background:#00d68f;color:#0f1117;border:none;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>AI <span class="raid">RaidMeter</span></h1>
+    <div class="sub">Personal Green Coding Coach</div>
+    <div class="tagline">From tokenmaxxing to value-aware AI governance.</div>
+  </header>
+  <div id="preflight-zone" style="text-align:center;margin-top:24px">
+    <button class="coachbtn" onclick="loadPreflight()">&#128747; Pre-flight Check &mdash; before you start</button>
+    <div id="preflight" style="max-width:680px;margin:12px auto 0"></div>
+  </div>
+    <div class="chatzone">
+    <h3>&#128172; Ask the RaidMeter Agent &mdash; live</h3>
+    <div class="sub2">Same ADK agent, reading your real Arize Phoenix traces via MCP.</div>
+    <div class="chatlog" id="chatlog"></div>
+    <div id="exqs"></div>
+    <div class="chatin"><input id="chatinput" placeholder="Ask about your traces..." onkeydown="if(event.key==='Enter')chatSend()"><button onclick="chatSend()">Send</button></div>
+  </div>
+  <div id="app"></div>
+  <div id="live"></div>
+  <footer>Gemini · Google Cloud Agent Builder · Arize Phoenix · Cloud Run</footer>
+</div>
+<script>
+const SEV = { major: "MAJOR", minor: "MINOR" };
+function pct(a, b) { if (!a) return 0; return Math.max(0, Math.round((a - b) / a * 100)); }
+function bar(lbl, val, max, color) {
+  const w = Math.max(0, Math.min(100, val / max * 100));
+  return `<div class="bar-row"><span class="lbl">${lbl}</span>
+    <span class="bar-bg"><span class="bar-fill" style="width:${w}%;background:${color}"></span></span>
+    <span class="val">${val.toFixed(1)}</span></div>`;
+}
+function card(s, cls) {
+  const lvlCls = "lvl" + s.level;
+  const totCls = s.level >= 2 ? "r" : "g";
+  let sig = "";
+  if (s.signals.length === 0) {
+    sig = `<div class="clean">✓ Clean — no anti-pattern signals</div>`;
+  } else {
+    sig = s.signals.map(x => `<div class="sig">
+      <span class="sev">[${SEV[x.severity] || x.severity}]</span> ${x.display}
+      <div class="fix">→ ${x.intervention}</div></div>`).join("");
+  }
+  return `<div class="card ${cls}">
+    <h2>${cls} · ${s.id}</h2>
+    <div class="task">${s.task} <span style="color:#565b6b">(${s.difficulty})</span></div>
+    <span class="badge ${lvlCls}">Level ${s.level} · ${s.level_label}</span>
+    <div class="total ${totCls}">${s.scores.total.toFixed(1)}</div>
+    <div class="total-lbl">RaidMeter Score</div>
+    <div class="bars">
+      ${bar("Value", s.scores.value, 100, "#4dabf7")}
+      ${bar("Delta", s.scores.delta, 100, "#00d68f")}
+      ${bar("Green", s.scores.green, 100, "#ffd43b")}
+    </div>
+    ${s.baseline_ref ? "" : '<div class="basenote">baseline &mdash; no prior session, so Delta/Green = 0 by design</div>'}
+    <div class="metrics">
+      <div><b>${(s.metrics.total_tokens/1000).toFixed(0)}K</b> tokens</div>
+      <div><b>${s.metrics.duration_min}</b> min</div>
+      <div>PR <b>${s.metrics.pr_status}</b></div>
+    </div>
+    <div class="signals">${sig}</div>
+    <button class="coachbtn" onclick="loadCoach('${s.id}')">&#129658; AI Coaching (Gemini)</button>
+    <div id="coach-${s.id}"></div>
+  </div>`;
+}
+function render(report) {
+  const byId = {};
+  report.sessions.forEach(s => byId[s.id] = s);
+  const after = report.sessions.find(s => s.baseline_ref) || report.sessions[report.sessions.length - 1];
+  const before = byId[after.baseline_ref] || report.sessions[0];
+  let html = `<div class="grid">${card(before, "before")}${card(after, "after")}</div>`;
+  html += `<div class="delta">
+    <div class="d"><div class="dv">-${pct(before.metrics.total_tokens, after.metrics.total_tokens)}%</div><div class="dl">Tokens</div></div>
+    <div class="d"><div class="dv">-${pct(before.metrics.duration_min, after.metrics.duration_min)}%</div><div class="dl">Time</div></div>
+    <div class="d"><div class="dv">${before.signals.length} → ${after.signals.length}</div><div class="dl">Anti-patterns</div></div>
+    <div class="d"><div class="dv">${before.scores.total.toFixed(1)} → ${after.scores.total.toFixed(1)}</div><div class="dl">Score</div></div>
+    <div class="d"><div class="dv">${before.metrics.pr_status} → ${after.metrics.pr_status}</div><div class="dl">Outcome</div></div>
+  </div>`;
+  document.getElementById("app").innerHTML = html;
+}
+fetch("../data/report.json")
+  .then(r => r.json()).then(render)
+  .catch(e => { document.getElementById("app").innerHTML =
+    `<div class="err">Could not load report.json — run <b>python3 raidmeter.py</b> first, and serve from the project root.<br>${e}</div>`; });
+</script>
+<script>
+var AGENT="https://ai-raidmeter-agent-733974887555.us-central1.run.app";
+var APP="raidmeter_agent",UID="judge",SID=null;
+var EXQ=["Diagnose the latest trace in the ai-raidmeter project.","What anti-patterns show up in the ai-raidmeter traces?","Give me a green-coding scorecard for ai-raidmeter."];
+function mdRender(t){t=t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");t=t.replace(/^\s*\|[\s:|-]+\|\s*$/gm,"");t=t.replace(/^#{1,6}\s*(.+)$/gm,'<b style="color:#4dabf7">$1</b>');t=t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");t=t.replace(/^\s*[\-\*]\s+(.+)$/gm,"&bull; $1");return t;}
+function chatAdd(cls,txt){var l=document.getElementById("chatlog");var d=document.createElement("div");d.className="msg "+cls;if(cls==="bot"){d.innerHTML=mdRender(txt);}else{d.textContent=txt;}l.appendChild(d);l.scrollTop=l.scrollHeight;return d;}
+function chatInit(){
+  chatAdd("bot","Hi, I am AI RaidMeter. I read your real Arize Phoenix traces via MCP and diagnose AI-coding waste like a clinician. Try one of these, or ask your own:");
+  var e=document.getElementById("exqs");
+  EXQ.forEach(function(q){var b=document.createElement("span");b.className="exq";b.textContent=q;b.onclick=function(){document.getElementById("chatinput").value=q;chatSend();};e.appendChild(b);});
+}
+function chatEnsure(){if(SID)return Promise.resolve();SID="s-"+Date.now();return fetch(AGENT+"/apps/"+APP+"/users/"+UID+"/sessions/"+SID,{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});}
+function chatSend(){
+  var inp=document.getElementById("chatinput");var t=(inp.value||"").trim();if(!t)return;inp.value="";
+  chatAdd("user",t);
+  var load=chatAdd("load","diagnosing... reading real traces via MCP (10-30s)");
+  chatEnsure().then(function(){
+    return fetch(AGENT+"/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({app_name:APP,user_id:UID,session_id:SID,new_message:{role:"user",parts:[{text:t}]}})});
+  }).then(function(r){return r.json();}).then(function(ev){
+    var out="";if(Array.isArray(ev))ev.forEach(function(e){if(e.content&&e.content.parts)e.content.parts.forEach(function(p){if(p.text)out+=p.text;});});
+    load.remove();chatAdd("bot",out||"(no text response)");
+  }).catch(function(err){load.remove();chatAdd("bot","Sorry, that query took too long or hit a limit. Try an example above, or ask about a specific trace in ai-raidmeter.");});
+}
+window.addEventListener("load",function(){setTimeout(chatInit,400);});
+function loadPreflight(){
+  var el=document.getElementById("preflight");
+  el.innerHTML='<div class="coachbox">&#128747; planning your flight...</div>';
+  fetch("/api/preflight?task=cloud+deployment+bugfix&difficulty=high").then(function(r){return r.json()}).then(function(p){
+    if(p.error){el.innerHTML='<div class="coachbox err">'+p.error+'</div>';return}
+    var risks=(p.predicted_risks||[]).map(function(r){return "<li><b>"+r.sin+"</b>: "+r.why+"</li>"}).join("");
+    var g=(p.guardrails||[]).map(function(x){return "<li>"+x+"</li>"}).join("");
+    el.innerHTML='<div class="coachbox"><b>&#9888; Predicted risks</b><ul>'+risks+'</ul><b>&#128737; Pre-set guardrails</b><ul>'+g+'</ul><i>'+p.flight_note+'</i></div>';
+  }).catch(function(e){el.innerHTML='<div class="coachbox err">'+e+'</div>'});
+}
+function loadCoach(sid){
+  var el=document.getElementById("coach-"+sid);
+  el.innerHTML='<div class="coachbox">&#129658; Gemini is diagnosing...</div>';
+  fetch("/api/coach?session_id="+sid).then(function(r){return r.json()}).then(function(c){
+    if(c.error){el.innerHTML='<div class="coachbox err">'+c.error+'</div>';return}
+    var rx=(c.prescriptions||[]).map(function(x){return "<li>"+x+"</li>"}).join("");
+    el.innerHTML='<div class="coachbox"><b>'+c.headline+'</b><p>'+c.diagnosis+'</p><ul>'+rx+'</ul><i>'+c.encouragement+'</i></div>';
+  }).catch(function(e){el.innerHTML='<div class="coachbox err">'+e+'</div>'});
+}
+function loadLive(){
+  fetch("/api/live").then(function(r){return r.json()}).then(function(d){
+    var s=d.sessions||[];if(!s.length)return;
+    var h='<h2 style="margin-top:36px;color:#4dabf7;text-align:center">&#128301; Live Arize Traces &mdash; real, via Phoenix MCP</h2><div class="grid">';
+    h+=s.map(function(x){return '<div class="card after"><h2>LIVE &middot; '+x.id+'</h2><div class="task">'+x.task+' ('+(x.model||"")+')</div><div class="total g">'+x.total_tokens+'</div><div class="total-lbl">real tokens from Arize</div><div class="metrics"><div><b>'+x.duration_min+'</b> min</div><div>signals: <b>'+x.signals.length+'</b></div></div><div class="clean">&#10003; pulled from a real Phoenix trace</div></div>'}).join("");
+    h+='</div>';document.getElementById("live").innerHTML=h;
+  }).catch(function(e){});
+}
+window.addEventListener("load",function(){setTimeout(loadLive,600)});
+</script>
+</body>
+</html>

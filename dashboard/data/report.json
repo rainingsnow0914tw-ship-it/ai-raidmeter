@@ -1,0 +1,79 @@
+{
+  "sessions": [
+    {
+      "id": "before-001",
+      "developer_id": "dev-001",
+      "task": "cloud_deployment_bugfix",
+      "difficulty": "high",
+      "metrics": {
+        "total_tokens": 1000000,
+        "duration_min": 95,
+        "pr_status": "rejected"
+      },
+      "signals": [
+        {
+          "rule_id": "S01",
+          "display": "Full-file Devotion",
+          "severity": "major",
+          "intervention": "Use grep to locate the anchor and read only the relevant section, not the whole file."
+        },
+        {
+          "rule_id": "S02",
+          "display": "Local Loop",
+          "severity": "major",
+          "intervention": "Stop re-running locally; deploy to a cloud preview and verify there."
+        },
+        {
+          "rule_id": "S03",
+          "display": "Blind Retry",
+          "severity": "major",
+          "intervention": "Add a diagnosis step before retrying; cap brute retries at 2."
+        },
+        {
+          "rule_id": "S04",
+          "display": "Context Hoarding",
+          "severity": "minor",
+          "intervention": "Clear or summarize context periodically; do not carry the whole history every turn."
+        },
+        {
+          "rule_id": "S05",
+          "display": "Sticky Command",
+          "severity": "minor",
+          "intervention": "One command block per atomic step; do not chain multiple commands in one block."
+        }
+      ],
+      "level": 3,
+      "level_label": "High-confidence Waste Loop",
+      "waste_score": 8,
+      "scores": {
+        "value": 0,
+        "delta": 0.0,
+        "green": 0.0,
+        "total": 0.0
+      },
+      "baseline_ref": null
+    },
+    {
+      "id": "after-001",
+      "developer_id": "dev-001",
+      "task": "cloud_deployment_bugfix",
+      "difficulty": "high",
+      "metrics": {
+        "total_tokens": 420000,
+        "duration_min": 38,
+        "pr_status": "merged"
+      },
+      "signals": [],
+      "level": 0,
+      "level_label": "No Clear Signal",
+      "waste_score": 0,
+      "scores": {
+        "value": 40,
+        "delta": 75.4,
+        "green": 58.8,
+        "total": 56.1
+      },
+      "baseline_ref": "before-001"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+"""AI RaidMeter ADK agent - Cloud Run web entry.
+
+Wraps the raidmeter_agent (ADK + Phoenix MCP) in a FastAPI app via
+get_fast_api_app, so the agent is reachable as a web service with the
+ADK dev UI (web=True) for judges to chat with it live.
+"""
+import os
+
+import uvicorn
+from fastapi import FastAPI
+from google.adk.cli.fast_api import get_fast_api_app
+
+AGENT_DIR = os.path.dirname(os.path.abspath(__file__))
+SESSION_SERVICE_URI = "sqlite+aiosqlite:///./sessions.db"
+ALLOWED_ORIGINS = ["*"]
+SERVE_WEB_INTERFACE = True
+
+app: FastAPI = get_fast_api_app(
+    agents_dir=AGENT_DIR,
+    session_service_uri=SESSION_SERVICE_URI,
+    allow_origins=ALLOWED_ORIGINS,
+    web=SERVE_WEB_INTERFACE,
+)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

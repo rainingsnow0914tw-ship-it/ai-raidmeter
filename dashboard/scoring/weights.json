@@ -1,0 +1,1 @@
+{"version":"0.1","composite":{"value":0.45,"delta":0.35,"green":0.20},"value":{"outcome_base":{"merged":40,"rejected":5,"default":20},"waste_penalty_per_point":3,"max":100},"delta":{"token":0.30,"time":0.30,"waste":0.25,"outcome":0.15},"green":{"token_saved":0.5,"time_saved":0.3,"compute_proxy":0.2,"note":"estimated/proxy only, not precise carbon accounting"}}
