@@ -16,6 +16,7 @@
 
 ---
 
+🎬 **Demo Video:** https://youtu.be/i31tddmGfqg
 🔗 **Live Dashboard:** https://ai-raidmeter-733974887555.us-central1.run.app
 🤖 **Interactive Agent:** https://ai-raidmeter-agent-733974887555.us-central1.run.app/dev-ui/
 
